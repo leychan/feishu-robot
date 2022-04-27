@@ -56,7 +56,7 @@ class Request
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         //结果以字符串返回,而不是直接打印
-        //curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
         curl_close($ch);
         return $res;
