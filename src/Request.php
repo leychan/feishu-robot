@@ -50,6 +50,9 @@ class Request
                 'Content-Type: application/json',
             ]);
             $params = json_encode($params);
+        } else {
+            $params = http_build_query($params);
+
         }
 
         curl_setopt($ch, CURLOPT_POST, true);
