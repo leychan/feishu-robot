@@ -19,11 +19,15 @@ class Request
      * @return bool|string
      * @throws \Exception
      */
-    public static function get($url, $timeout=0) {
+    public static function get($url, $header = [], $connTimeout = 0, $readTimeout = 0) {
         self::urlEmptycheck($url);
         $ch = curl_init();
+        if (!empty($header)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        }
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connTimeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $readTimeout);
         //结果以字符串返回,而不是直接打印
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);
@@ -37,16 +41,16 @@ class Request
      * @date 2022/4/18
      * @param string $url
      * @param array $params
-     * @param false $json
-     * @param int $timeout
+     * @param int $json
+     * @param int $connTimeout
      * @return bool|string
      * @throws \Exception
      */
-    public static function post(string $url = '', array $params = [], $json = 0, int $timeout = 0) {
+    public static function post(string $url = '', array $params = [], $header = [], $json = 0, int $connTimeout = 0, int $readTimeout = 0) {
         self::urlEmptycheck($url);
         $ch = curl_init($url);
         if ($json) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            $header = array_merge($header, [
                 'Content-Type: application/json',
             ]);
             $params = json_encode($params);
@@ -54,10 +58,13 @@ class Request
             $params = http_build_query($params);
 
         }
-
+        if (!empty($header)) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        }
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connTimeout);
+        curl_setopt($ch, CURLOPT_TIMEOUT, $readTimeout);
         //结果以字符串返回,而不是直接打印
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $res = curl_exec($ch);

@@ -70,11 +70,11 @@ abstract class Robot {
     public function notify() {
         if ($this->msgType == self::TYPE_TEXT) {
             $this->generateText();
-            Request::post($this->webhook, $this->body, 1);
+            Request::post($this->webhook, $this->body, [], 1);
             return;
         }
         $this->generateMedia();
-        Request::post($this->webhook, $this->body, 1);
+        Request::post($this->webhook, $this->body, [], 1);
     }
 
     /**
